@@ -1,0 +1,22 @@
+input {
+    margin: 10px;
+    height: 40px;
+}
+
+.btn {
+    margin: 10px;
+}
+
+header {
+    display: flex;
+    justify-content: center;
+    background-color: blue;
+}
+
+header h1 {
+    color: white;
+}
+
+.search-box {
+    margin: 20px;
+}

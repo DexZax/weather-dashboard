@@ -21,4 +21,5 @@ N/A
 
 N/A
 
-deployed link: 
+deployed link: https://dexzax.github.io/weather-dashboard/
+

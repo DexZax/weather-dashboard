@@ -49,9 +49,18 @@ var displayWeather = function (currentWeather, dailyWeather, city) {
   var forecast = document.createElement("div");
   forecast.classList = "row";
 
+  var unixTimestamp = currentWeather.dt
+
+  var milliseconds = unixTimestamp * 1000 
+  
+  var dateObject = new Date(milliseconds)
+  
+  var humanDateFormat = dateObject.toLocaleString() 
+
+
   // create h3 for date and city name
   var date = document.createElement("h3");
-  date.textContent = city + "-" + currentWeather.dt;
+  date.textContent = city + " - " + humanDateFormat;
 
   var forecastHeading = document.createElement("h3");
   forecastHeading.textContent = "5 Day Forecast";

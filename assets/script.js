@@ -1,6 +1,7 @@
 var searchBtn = document.querySelector(".btn-primary");
 var cityInputEl = document.querySelector("#city");
 var weatherContainer = document.querySelector("#weather-container");
+var historyContainer = document.querySelector("#search-history");
 
 var getCityCords = function (city) {
   var apiUrl =
@@ -11,15 +12,17 @@ var getCityCords = function (city) {
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
+        console.log(data.name);
+        var name = data.name;
         var lat = data.coord.lat;
         var lon = data.coord.lon;
-        getCityWeather(lat, lon);
+        getCityWeather(lat, lon, name);
       });
     }
   });
 };
 
-var getCityWeather = function (lat, lon) {
+var getCityWeather = function (lat, lon, name) {
   var apiUrl =
     "https://api.openweathermap.org/data/2.5/onecall?lat=" +
     lat +
@@ -31,7 +34,7 @@ var getCityWeather = function (lat, lon) {
     if (response.ok) {
       response.json().then(function (data) {
         console.log(data.current, data.daily);
-        displayWeather(data.current, data.daily, city);
+        displayWeather(data.current, data.daily, name);
       });
     } else {
       alert("unable to find this City");
@@ -42,30 +45,33 @@ var getCityWeather = function (lat, lon) {
 var displayWeather = function (currentWeather, dailyWeather, city) {
   weatherContainer.innerHTML = "";
 
-  // create container to hold current day weather and future weather
   var currentDay = document.createElement("div");
-  currentDay.classList = "current-day card col-10";
+  currentDay.classList = "current-day card col-11";
 
   var forecast = document.createElement("div");
   forecast.classList = "row";
 
-  var unixTimestamp = currentWeather.dt
+  var unixTimestamp = currentWeather.dt;
 
-  var milliseconds = unixTimestamp * 1000 
-  
-  var dateObject = new Date(milliseconds)
-  
-  var humanDateFormat = dateObject.toLocaleString() 
+  var milliseconds = unixTimestamp * 1000;
 
+  var dateObject = new Date(milliseconds);
 
-  // create h3 for date and city name
+  var humanDateFormat = dateObject.toLocaleString();
+
   var date = document.createElement("h3");
   date.textContent = city + " - " + humanDateFormat;
+
+  var icon = document.createElement("img");
+  icon.classList = "icon";
+  icon.setAttribute(
+    "src",
+    `http://openweathermap.org/img/w/${currentWeather.weather[0].icon}.png`
+  );
 
   var forecastHeading = document.createElement("h3");
   forecastHeading.textContent = "5 Day Forecast";
 
-  // create p tags to display required weather details
   var temp = document.createElement("p");
   temp.textContent = "Temperature: " + currentWeather.temp + "C";
 
@@ -78,8 +84,17 @@ var displayWeather = function (currentWeather, dailyWeather, city) {
   var uv = document.createElement("p");
   uv.textContent = "UV Index: " + currentWeather.uvi;
 
+  if (currentWeather.uvi < 3) {
+    uv.style.color = "green";
+  } else if (currentWeather.uvi < 7) {
+    uv.style.color = "yellow";
+  } else {
+    uv.style.Color = "red";
+  }
+
   weatherContainer.appendChild(currentDay);
   currentDay.appendChild(date);
+  currentDay.appendChild(icon);
   currentDay.appendChild(temp);
   currentDay.appendChild(humidity);
   currentDay.appendChild(wind);
@@ -87,10 +102,29 @@ var displayWeather = function (currentWeather, dailyWeather, city) {
   weatherContainer.appendChild(forecast);
   forecast.appendChild(forecastHeading);
 
-  for (var i = 0; i < 5; i++); {
-
+  for (var i = 1; i < 6; i++) {
     var futContainer = document.createElement("div");
     futContainer.classList = "future-day card col-2";
+
+    var unixFutTimestamp = dailyWeather[i].dt;
+
+    var milliseconds = unixFutTimestamp * 1000;
+
+    var dateObject = new Date(milliseconds);
+
+    var humanFutDateFormat = dateObject.toLocaleString("en-US", {
+      weekday: "long",
+    });
+
+    var futdate = document.createElement("h4");
+    futdate.textContent = humanFutDateFormat;
+
+    var futicon = document.createElement("img");
+    futicon.classList = "futureIcon";
+    futicon.setAttribute(
+      "src",
+      `http://openweathermap.org/img/w/${dailyWeather[i].weather[0].icon}.png`
+    );
 
     var futtemp = document.createElement("p");
     futtemp.textContent = "Temperature: " + dailyWeather[i].temp.max + "C";
@@ -105,6 +139,8 @@ var displayWeather = function (currentWeather, dailyWeather, city) {
     futuv.textContent = "UV Index: " + dailyWeather[i].uvi;
 
     forecast.appendChild(futContainer);
+    futContainer.appendChild(futdate);
+    futContainer.appendChild(futicon);
     futContainer.appendChild(futtemp);
     futContainer.appendChild(futhumidity);
     futContainer.appendChild(futwind);
@@ -117,10 +153,23 @@ var searchHandler = function (event) {
   var city = cityInputEl.value.trim();
   if (city) {
     getCityCords(city);
+    saveCity(city);
     cityInputEl.value = "";
   } else {
     alert("Please enter a City to view that City's weather");
   }
+};
+
+var saveCity = function (city) {
+  cityNameBtn = document.createElement("button");
+  cityNameBtn.classList = "col-12 btn btn-secondary";
+  cityNameBtn.textContent = city;
+
+  historyContainer.appendChild(cityNameBtn);
+
+  cityNameBtn.addEventListener("click", function (event) {
+    getCityCords(event.target.innerHTML);
+  });
 };
 
 searchBtn.addEventListener("click", searchHandler);

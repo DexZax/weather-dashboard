@@ -33,3 +33,13 @@ header h1 {
 .future-day p, h4 {
     color: aliceblue;
 }
+
+.icon {
+    height: 50px;
+    width: 50px;
+}
+
+.futureIcon {
+    height: 50px;
+    width: 50px;
+}

@@ -12,7 +12,6 @@ var getCityCords = function (city) {
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        console.log(data.name);
         var name = data.name;
         var lat = data.coord.lat;
         var lon = data.coord.lon;
@@ -33,7 +32,6 @@ var getCityWeather = function (lat, lon, name) {
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        console.log(data.current, data.daily);
         displayWeather(data.current, data.daily, name);
       });
     } else {

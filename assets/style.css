@@ -43,3 +43,7 @@ header h1 {
     height: 50px;
     width: 50px;
 }
+
+.current-day {
+    background-color: aliceblue;
+}

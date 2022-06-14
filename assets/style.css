@@ -20,3 +20,16 @@ header h1 {
 .search-box {
     margin: 20px;
 }
+
+.card {
+    margin: 20px;
+    padding: 10px;
+}
+
+.future-day {
+    background-color: rgba(70, 70, 103, 0.919);
+}
+
+.future-day p, h4 {
+    color: aliceblue;
+}
